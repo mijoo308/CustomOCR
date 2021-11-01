@@ -121,8 +121,8 @@ class OPT():
 
 
 
-def recognize(saved_model_path, trans, feature, sequence, pred):
-    opt = OPT(saved_model_path, trans, feature, sequence, pred)
+def recognize(im_folder, saved_model_path, trans, feature, sequence, pred):
+    opt = OPT(im_folder, saved_model_path, trans, feature, sequence, pred)
 
     """ vocab / character number configuration """
     if opt.sensitive:
