@@ -90,32 +90,6 @@ def demo(opt):
                 log.write(f'{img_name:25s}\t{pred:25s}\t{confidence_score:0.4f}\n')
 
             log.close()
-class OPT():
-    def __init__(self, opt):
-        super(Model, self).__init__()
-
-        self.image_folder = ''
-        self.workers = 0
-        self.batch_size = 192
-        self.saved_model = ''
-        '''data processing'''
-        self.batch_max_length = 100
-        self.imgH = 32
-        self.imgW = 100
-        self.rgb = True
-        self.character = '0123456789abcdefghijklmnopqrstuvwxyz'  ## 한글로 수정 필요
-        self.sensitive = True
-        self.PAD = False
-        """ Model Architecture """
-        self.Transformation = ''
-        self.FeatureExtraction = ''
-        self.SequenceModeling = ''
-        self.Prediction = ''
-        self.num_fiducial = 20
-        self.input_channel = 1
-        self.output_chanel = 256
-        self.hidden_size = 256
-        self.num_gpu = torch.cuda.device_count()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
