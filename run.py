@@ -1,5 +1,5 @@
 from craft_onnx.onnx_test import detect # detection
-from deep_text_recognition_benchmark.recognition import recognize
+from deep_text_recognition_benchmark.recognition import OPT, load_model, recognize
 import tempfile
 import os
 import cv2
@@ -9,13 +9,21 @@ import shutil
 def main():
     test_img_path = r'C:\Users\beyon\Desktop\CustomOCR\news_test\news.jpg'
     threshold = 0.5
-    onnx_model_path = r'./craft_onnx/detector_craft.onnx'
+    detection_model = r'./craft_onnx/detector_craft.onnx'
     img_name = os.path.basename(test_img_path).split('.')[0]
     im = cv2.imread(test_img_path)
 
+    recog_model = ''
+    transformation = 'TPS'
+    feature_extraction = 'ResNet'
+    sequence = 'BiLSTM'
+    prediction = 'Attn'
 
+    opt = OPT(recog_model, transformation, feature_extraction, sequence, prediction)
+    model, converter = load_model(opt)
+    
     '''detection'''
-    boxes = detect(onnx_model_path, im, threshold)
+    boxes = detect(detection_model, im, threshold)
 
     ltrb_list = []  ## [[(tl),(br)],[],[], .... ]
     for box in boxes:
@@ -29,27 +37,29 @@ def main():
     sorted_row_list = utils.get_row_list(ltrb_list, threshold=3)
     merged_row_list = utils.get_merged_row_list(sorted_row_list)
 
-    model = ''
-    transformation = 'TPS'
-    feature_extraction = 'ResNet'
-    sequence = 'BiLSTM'
-    prediction = 'Attn'
 
-    ## TODO: folder 단위가 아니라 이미지 하나씩 처리하는 방법으로 바꿔야함
-    #       1. 그냥 temp 폴더 만들어서 원래 방식대로 폴더를 넘기는 방식도 있음
-    #       2. 모델 로드를 한 번만 하는 방식으로 만들어야 함
-    # -> temp 폴더 만드는 게 제일 편할 것 같음..
+    ### TODO: Test 필요
 
-
-    tempdir = tempfile.mkdtemp(prefix=img_name)
-    shutil(tempdir)
+    temp_detection_dir = tempfile.mkdtemp(prefix=img_name)
 
     '''recognition'''
+    cnt = 0
     for box in merged_row_list:
         l, t, r, b = box[0][0], box[0][1], box[1][0], box[1][1]
         cropped_img = im[t:b, l:r]
-        recognize(cropped_img, model, transformation, feature_extraction, sequence, prediction)
+        cv2.imwrite(os.path.join(temp_detection_dir, str(cnt) + ".jpg"), cropped_img)
+        cnt += 1
 
+    opt.image_folder = temp_detection_dir
+    print(os.path.listdir(temp_detection_dir)) # for debugging
+
+    # [[img_name, pred, confidence_score], ...]
+    result = recognize(opt, model, converter) # 확인되면 안에서 프린트 되는 곳 삭제
+    map(print, result)
+
+    shutil(temp_detection_dir)
+
+    '''visualize'''
     # draw
     for box in merged_row_list:
         tl = box[0]
