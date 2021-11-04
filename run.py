@@ -1,4 +1,4 @@
-from craft_onnx.onnx_test import detect # detection
+from craft_onnx.detection import detect # detection
 from deep_text_recognition_benchmark.recognition import OPT, load_model, recognize
 import tempfile
 import os

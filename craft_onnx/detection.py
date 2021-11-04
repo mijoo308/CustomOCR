@@ -1,8 +1,8 @@
 import cv2
 import onnxruntime as rt
 import numpy as np
-import craft_onnx.easyocr_utils.craft_utils
-import craft_onnx.easyocr_utils.imgproc as im_proc
+import craft_onnx.craft_utils.craft_utils
+import craft_onnx.craft_utils.imgproc as im_proc
 
 
 # parameter
