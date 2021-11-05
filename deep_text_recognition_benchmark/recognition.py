@@ -115,7 +115,7 @@ class OPT():
         self.Prediction = prediction                ## CTC|Attn
         self.num_fiducial = 20
         self.input_channel = 1
-        self.output_chanel = 256
+        self.output_channel = 256
         self.hidden_size = 256
         self.num_gpu = torch.cuda.device_count()
 

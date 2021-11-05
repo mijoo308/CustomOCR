@@ -51,13 +51,13 @@ def main():
         cnt += 1
 
     opt.image_folder = temp_detection_dir
-    print(os.path.listdir(temp_detection_dir)) # for debugging
+    print(os.listdir(temp_detection_dir)) # for debugging
 
     # [[img_name, pred, confidence_score], ...]
     result = recognize(opt, model, converter) # 확인되면 안에서 프린트 되는 곳 삭제
     map(print, result)
 
-    shutil(temp_detection_dir)
+    shutil.rmtree(temp_detection_dir)
 
     '''visualize'''
     # draw
@@ -65,8 +65,6 @@ def main():
         tl = box[0]
         br = box[1]
         im = cv2.rectangle(im, tl, br, (0, 255, 0), 2)
-        # cv2.imshow('g', im)
-        # cv2.waitKey(0)
 
     # save
     img_name = os.path.basename(test_img_path).split('.')[0]
