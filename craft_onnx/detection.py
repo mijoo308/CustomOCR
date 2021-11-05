@@ -34,8 +34,8 @@ def detect(onnx_model_path, image, threshold = 0.5):
         score_link = out[:, :, 1]
 
         # Post-processing
-        boxes, polys, mapper = craft_onnx.easyocr_utils.craft_utils.getDetBoxes(score_text, score_link, threshold, 0.4, 0.4)
-        boxes = craft_onnx.easyocr_utils.craft_utils.adjustResultCoordinates(boxes, ratio_w, ratio_h)
+        boxes, polys, mapper = craft_onnx.craft_utils.craft_utils.getDetBoxes(score_text, score_link, threshold, 0.4, 0.4)
+        boxes = craft_onnx.craft_utils.craft_utils.adjustResultCoordinates(boxes, ratio_w, ratio_h)
         boxes = np.array(boxes, dtype=int)
 
         # print(boxes)
