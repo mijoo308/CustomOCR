@@ -35,7 +35,8 @@ def main():
     ltrb_list = sorted(ltrb_list, key = lambda x : x[0][1])
 
     sorted_row_list = utils.get_row_list(ltrb_list, threshold=3)
-    merged_row_list = utils.get_merged_row_list(sorted_row_list)
+    fixed_row_list = utils.fix_format(sorted_row_list, margin=2)
+    # merged_row_list = utils.get_merged_row_list(sorted_row_list)
 
 
     ### TODO: Test 필요
@@ -44,9 +45,11 @@ def main():
 
     '''recognition'''
     cnt = 0
-    for box in merged_row_list:
+    for box in fixed_row_list:
+        # print(box[0][0], box[0][1], box[1][0], box[1][1])
         l, t, r, b = box[0][0], box[0][1], box[1][0], box[1][1]
-        cropped_img = im[t:b, l:r]
+        # l, t, r, b = box[0][0][0], box[0][0][1], box[0][1][0], box[0][1][1]
+        cropped_img = im_gray[t:b, l:r]
         cv2.imwrite(os.path.join(temp_detection_dir, str(cnt) + ".jpg"), cropped_img)
         cnt += 1
 
@@ -55,8 +58,10 @@ def main():
 
     # [[img_name, pred, confidence_score], ...]
     result = recognize(opt, model, converter) # 확인되면 안에서 프린트 되는 곳 삭제
-    map(print, result)
 
+    full_text = utils.get_full_text_result(result)
+    print(full_text)
+    
     shutil.rmtree(temp_detection_dir)
 
     '''visualize'''

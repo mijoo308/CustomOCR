@@ -28,10 +28,8 @@ def fix_format(sorted_row_list, margin=0):
             result_list.append([(l, t), (r, b)])
     
     return result_list
+
         
-
-
-    return 
 def get_merged_row_list(sorted_row_list, margin=0):
     merged_row_list = []
     for row in sorted_row_list:
@@ -47,3 +45,14 @@ def get_merged_row_list(sorted_row_list, margin=0):
         merged_row_list.append([(left, top),(right, bottom)])
     
     return merged_row_list
+
+def get_full_text_result(origin_result):
+    # [[img_name, pred, confidence_score], ...]
+    result = [x[1] for x in origin_result]
+    full_text = ''
+    for string in result:
+        full_text += (str(string) + " ")
+    
+    return full_text
+    
+
