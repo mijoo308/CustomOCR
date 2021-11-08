@@ -8,8 +8,12 @@ import craft_onnx.craft_utils.imgproc as im_proc
 # parameter
 
 def detect(onnx_model_path, image, threshold = 0.5):
+    # turn off onnx runtime warn
+    so = rt.SessionOptions()
+    so.log_severity_level = 3
 
-    sess = rt.InferenceSession(onnx_model_path)
+    # load onnx model
+    sess = rt.InferenceSession(onnx_model_path, so)
     input_name = sess.get_inputs()[0].name
     # im = cv2.imread(image_path)
     h,w,_ = image.shape
