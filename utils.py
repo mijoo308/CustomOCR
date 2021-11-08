@@ -14,7 +14,7 @@ def get_row_list(lt_rb_list, threshold=3):
 
     return sorted_row_groups
 
-def fix_format(sorted_row_list, margin=0):
+def fix_format(sorted_row_list, height, width, margin=0):
     result_list = []
     for row in sorted_row_list:
         for box in row: ##   l t r b
@@ -25,12 +25,14 @@ def fix_format(sorted_row_list, margin=0):
 
             if l<0: l = 0
             if t<0 : t = 0
+            if r>width: r = width
+            if b>height: b = height
             result_list.append([(l, t), (r, b)])
     
     return result_list
 
         
-def get_merged_row_list(sorted_row_list, margin=0):
+def get_merged_row_list(sorted_row_list, height, width, margin=0):
     merged_row_list = []
     for row in sorted_row_list:
         left = min(row, key = lambda x : x[0][0])[0][0] - margin
@@ -40,6 +42,8 @@ def get_merged_row_list(sorted_row_list, margin=0):
 
         if left<0: left = 0
         if top<0: top = 0
+        if right>width: right = width
+        if bottom>height: bottom = height
 
 
         merged_row_list.append([(left, top),(right, bottom)])

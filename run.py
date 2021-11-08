@@ -15,6 +15,8 @@ def main():
 
     recog_model = ''
     transformation = 'TPS'
+    h,w,_ = im.shape
+
     feature_extraction = 'ResNet'
     sequence = 'BiLSTM'
     prediction = 'Attn'
@@ -35,13 +37,15 @@ def main():
     ltrb_list = sorted(ltrb_list, key = lambda x : x[0][1])
 
     sorted_row_list = utils.get_row_list(ltrb_list, threshold=3)
-    fixed_row_list = utils.fix_format(sorted_row_list, margin=2)
-    # merged_row_list = utils.get_merged_row_list(sorted_row_list)
+    fixed_row_list = utils.fix_format(sorted_row_list, h, w, margin=2)
+    # merged_row_list = utils.get_merged_row_list(sorted_row_list, h, w)
 
 
     ### TODO: Test 필요
 
     temp_detection_dir = tempfile.mkdtemp(prefix=img_name)
+
+    im_gray = cv2.imread(test_img_path, cv2.IMREAD_GRAYSCALE)
 
     '''recognition'''
     cnt = 0
@@ -66,10 +70,10 @@ def main():
 
     '''visualize'''
     # draw
-    for box in merged_row_list:
+    for box in fixed_row_list:
         tl = box[0]
         br = box[1]
-        im = cv2.rectangle(im, tl, br, (0, 255, 0), 2)
+        im = cv2.rectangle(im, tl, br, (0, 255, 0), 1)
 
     # save
     img_name = os.path.basename(test_img_path).split('.')[0]
