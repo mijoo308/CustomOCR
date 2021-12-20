@@ -21,7 +21,7 @@ def fix_format(sorted_row_list, height, width, margin=0):
             l = box[0][0]-margin
             t = box[0][1]-margin
             r = box[1][0]+margin
-            b = box[1][1]+margin
+            b = box[1][1]  ## craft 바운딩박스가 아래로 길게 잡히는 경향이 있음
 
             if l<0: l = 0
             if t<0 : t = 0
