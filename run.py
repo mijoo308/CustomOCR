@@ -6,21 +6,35 @@ import os
 import cv2
 import utils
 import shutil
+import argparse
 
-TEST_IMG_PATH = r'./demo_img/news_title.jpg'
 
 def main():
-    ''' [1. load model & img ] '''
-    im = cv2.imread(TEST_IMG_PATH)
+    
+    ''' [ 0. parse arg ] '''
+    parser = argparse.ArgumentParser(description='Custom OCR')
+    parser.add_argument('--image_path', type=str, required=True, help='image path')
+    parser.add_argument('--recognition_model_path', type=str, default=False, required=True, help='recognition model path')
+    parser.add_argument('--detection_threshold', type=float, default=0.5, help='detection threshold')
+     # select model
+    parser.add_argument('--transformation', default='None', type=str, required=True, help='None/TPS')
+    parser.add_argument('--feature_extraction', type=str, required=True, help='ResNet/VGG')
+    parser.add_argument('--sequence', default='BiLSTM', type=str, required=True, help='BiLSTM')
+    parser.add_argument('--prediction', type=str, required=True, help='CTC/Attn')
+        
+    args = parser.parse_args()
+    
+    ''' [ 1. load model & img ] '''
+    im = cv2.imread(args.image_path)
     h,w,_ = im.shape
     
-    img_name = os.path.basename(TEST_IMG_PATH).split('.')[0]
+    img_name = os.path.basename(args.image_path).split('.')[0]
     
-    opt = OPT(RECOGNITION_MODEL, TRANSFORMATION, FEATURE_EXTRACTION, SEQUENCE, PREDICTION)
+    opt = OPT(args.recognition_model_path, args.transformation, args.feature_extraction, args.sequence, args.prediction)
     model, converter = load_model(opt)
     
-    '''[2. detection ]'''
-    boxes = detect(detection_model, im, DETECTION_THRESHOLD)
+    '''[ 2. detection ]'''
+    boxes = detect(detection_model, im, args.detection_threshold)
 
     ltrb_list = []  ## [[(tl),(br)],[],[], .... ]
     for box in boxes:
@@ -36,7 +50,7 @@ def main():
 
     temp_detection_dir = tempfile.mkdtemp(prefix=img_name)
 
-    im_gray = cv2.imread(TEST_IMG_PATH, cv2.IMREAD_GRAYSCALE)
+    im_gray = cv2.imread(args.image_path, cv2.IMREAD_GRAYSCALE)
 
     '''[ 3. recognition ]'''
     cnt = 0
@@ -66,7 +80,7 @@ def main():
         im = cv2.rectangle(im, tl, br, (0, 255, 0), 1)
 
     # save
-    img_name = os.path.basename(TEST_IMG_PATH).split('.')[0]
+    img_name = os.path.basename(args.image_path).split('.')[0]
     save_path = img_name + "_merged_detection.jpg"
     cv2.imshow('result', im)
     cv2.waitKey(0)
