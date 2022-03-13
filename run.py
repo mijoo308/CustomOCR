@@ -1,6 +1,5 @@
 from craft_onnx.detection import detect
 from deep_text_recognition_benchmark.recognition import OPT, load_model, recognize
-from config import *
 import tempfile
 import os
 import cv2
@@ -14,7 +13,8 @@ def main():
     ''' [ 0. parse arg ] '''
     parser = argparse.ArgumentParser(description='Custom OCR')
     parser.add_argument('--image_path', type=str, required=True, help='image path')
-    parser.add_argument('--recognition_model_path', type=str, default=False, required=True, help='recognition model path')
+    parser.add_argument('--recognition_model_path', type=str, required=True, help='recognition model path')
+    parser.add_argument('--detection_model_path', type=str, default='./craft_onnx/detector_craft.onnx', help='detection model path')
     parser.add_argument('--detection_threshold', type=float, default=0.5, help='detection threshold')
      # select model
     parser.add_argument('--transformation', default='None', type=str, required=True, help='None/TPS')
@@ -34,7 +34,7 @@ def main():
     model, converter = load_model(opt)
     
     '''[ 2. detection ]'''
-    boxes = detect(detection_model, im, args.detection_threshold)
+    boxes = detect(args.detection_model_path, im, args.detection_threshold)
 
     ltrb_list = []  ## [[(tl),(br)],[],[], .... ]
     for box in boxes:
